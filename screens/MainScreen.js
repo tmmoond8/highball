@@ -12,11 +12,7 @@ const Tab = createBottomTabNavigator();
 export default function MainScreen() {
   return (
     <ScreenLayout>
-      <Tab.Navigator
-        initialRouteName="Home"
-        tabBarOptions={{
-          showLabel: false,
-        }}>
+      <Tab.Navigator initialRouteName="Home">
         <Tab.Screen
           name="Home"
           component={HomeScreen}
