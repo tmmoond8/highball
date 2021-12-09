@@ -5,44 +5,58 @@ import {useNavigation} from '@react-navigation/native';
 
 const Slider = createMaterialTopTabNavigator();
 
-const categoris = [
-  {name: '싱글 몰트 위스키', category: 'singleMaltWhiskey'},
-  {name: '브랜디', category: 'brandy'},
-  {name: '진', category: 'gin'},
-  {name: '위스키', category: 'whiskey'},
-  {name: '럼', category: 'rum'},
-  // {name: '데낄라', category: 'tequila'},
-  // {name: '보드카', category: 'vodka'},
-  // {name: '리큐르', category: 'liqueur'},
-  // {name: '블렌디드 몰트 위스키', category: 'blendedMaltWhiskey'},
-  // {name: '사케', category: 'sake'},
-  // {name: '블렌디드 위스키', category: 'blendedWhiskey'},
-  // {name: '버번 위스키', category: 'bourbonWhiskey'},
-  // {name: '중국술', category: 'chinese'},
+const TYPES_OF_ALCOHOL = [
+  {name: '버번 위스키', type: 'bourbonWhiskey'},
+  {name: '진', type: 'gin'},
+  {name: '보드카', type: 'vodka'},
+  {name: '데낄라', type: 'tequila'},
+  {name: '위스키', type: 'whiskey'},
+  {name: '리큐르', type: 'liqueur'},
+  {name: '럼', type: 'rum'},
+  {name: ' 블렌디드  위스키', type: 'blendedWhiskey'},
+  {name: ' 싱글 몰트 위스키', type: 'singleMaltWhiskey'},
+  {name: ' 블렌디드  몰트 위스키', type: 'blendedMaltWhiskey'},
+  {name: '브랜디', type: 'brandy'},
+  {name: '사케', type: 'sake'},
+  {name: '중국술', type: 'chinese'},
 ];
+
+const renderBottleList = Object.values(TYPES_OF_ALCOHOL).reduce(
+  (acc, {name, type}) => {
+    acc[name] = () => <BottleList name={name} type={type} />;
+    return acc;
+  },
+  {},
+);
 
 export default function HomeScreen() {
   return (
-    <Slider.Navigator initialRouteName="vodka">
-      {categoris.map(({name, category}) => (
+    <Slider.Navigator
+      initialRouteName="whiskey"
+      screenOptions={{
+        tabBarLabelStyle: {fontSize: 12},
+        tabBarScrollEnabled: true,
+        tabBarItemStyle: {width: 88},
+      }}>
+      {TYPES_OF_ALCOHOL.map(({name, type}, index) => (
         <Slider.Screen
-          key={category}
+          key={type}
           name={name}
-          component={() => <BottleList name={name} category={category} />}
+          component={renderBottleList[name]}
         />
       ))}
     </Slider.Navigator>
   );
 }
 
-const BottleList = ({name, category}) => {
+const BottleList = ({name, type}) => {
   const navigation = useNavigation();
   return (
     <View>
       <Text>{name}</Text>
       <Button
         title="Go Detail"
-        onPress={() => navigation.navigate('Detail', {category})}
+        onPress={() => navigation.navigate('Detail', {type})}
       />
     </View>
   );
