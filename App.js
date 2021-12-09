@@ -1,60 +1,29 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import * as Screens from './screens';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName="Home"
-        tabBarOptions={{
-          showLabel: false,
-        }}>
-        <Tab.Screen
-          name="Home"
-          component={Screens.Home}
+      <Stack.Navigator initialRouteName="Main">
+        <Stack.Screen
+          name="Main"
+          component={Screens.Main}
           options={{
-            title: '홈',
-            tabBarIcon: ({color, size}) => (
-              <Icon name="home" color={color} size={size} />
-            ),
+            headerShown: false,
           }}
         />
-        <Tab.Screen
-          name="Search"
-          component={Screens.Search}
+        <Stack.Screen
+          name="Detail"
+          component={Screens.Detail}
           options={{
-            title: '검색',
-            tabBarIcon: ({color, size}) => (
-              <Icon name="search" color={color} size={size} />
-            ),
+            headerShown: false,
           }}
         />
-        <Tab.Screen
-          name="Timeline"
-          component={Screens.Timeline}
-          options={{
-            title: '타임라인',
-            tabBarIcon: ({color, size}) => (
-              <Icon name="article" color={color} size={size} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Cocktail"
-          component={Screens.Cocktail}
-          options={{
-            title: '칵테일',
-            tabBarIcon: ({color, size}) => (
-              <Icon name="local-bar" color={color} size={size} />
-            ),
-          }}
-        />
-      </Tab.Navigator>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
