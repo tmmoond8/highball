@@ -1,5 +1,6 @@
 import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {SHEET_URL} from '@env';
 import {colors} from '../styles';
 import BottleList from '../components/BottleList';
 
@@ -21,15 +22,19 @@ const TYPES_OF_ALCOHOL = [
   {name: '중국술', type: 'chinese'},
 ];
 
-const renderBottleList = Object.values(TYPES_OF_ALCOHOL).reduce(
-  (acc, {name, type}) => {
-    acc[name] = () => <BottleList />;
+const renderBottleList = data =>
+  Object.values(TYPES_OF_ALCOHOL).reduce((acc, {name, type}) => {
+    acc[name] = () => <BottleList data={data} />;
     return acc;
-  },
-  {},
-);
+  }, {});
 
 export default function HomeScreen() {
+  const [sheet, setSheet] = React.useState([]);
+  React.useEffect(() => {
+    fetch(`${SHEET_URL}?sheetName=highball`)
+      .then(r => r.json())
+      .then(d => setSheet(d.data));
+  }, []);
   return (
     <Slider.Navigator
       initialRouteName="whiskey"
@@ -45,7 +50,7 @@ export default function HomeScreen() {
         <Slider.Screen
           key={type}
           name={name}
-          component={renderBottleList[name]}
+          component={renderBottleList(sheet)[name]}
         />
       ))}
     </Slider.Navigator>
