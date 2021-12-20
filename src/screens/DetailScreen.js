@@ -7,7 +7,7 @@ export default function DetailScreen({route}) {
   const navigation = useNavigation();
   return (
     <ScreenLayout>
-      <Text>Detail {route.params.category}</Text>
+      <Text>Detail {JSON.stringify(route.params)}</Text>
       <Button title="Go Back" onPress={() => navigation.pop()} />
     </ScreenLayout>
   );

@@ -63,7 +63,7 @@ export default function BottleList() {
       renderItem={bottle => (
         <BottleItem
           bottle={bottle.item}
-          onPress={() => navigation.navigate('Detail', {id: bottle.id})}
+          onPress={() => navigation.navigate('Detail', {id: bottle.item.id})}
         />
       )}
       keyExtractor={bottle => bottle.id}

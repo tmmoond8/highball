@@ -1,10 +1,10 @@
 import React from 'react';
 import {Pressable, Text, Image, StyleSheet, View} from 'react-native';
 
-const BottleItem = ({bottle}) => {
+const BottleItem = ({bottle, onPress}) => {
   const {title, description, price, imageUrl} = bottle;
   return (
-    <Pressable style={styles.block}>
+    <Pressable style={styles.block} onPress={onPress}>
       <Image
         style={styles.image}
         source={{
