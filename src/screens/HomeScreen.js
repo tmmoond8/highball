@@ -1,8 +1,7 @@
 import React from 'react';
-import {View, Text, Button} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {useNavigation} from '@react-navigation/native';
 import {colors} from '../styles';
+import BottleList from '../components/BottleList';
 
 const Slider = createMaterialTopTabNavigator();
 
@@ -24,7 +23,7 @@ const TYPES_OF_ALCOHOL = [
 
 const renderBottleList = Object.values(TYPES_OF_ALCOHOL).reduce(
   (acc, {name, type}) => {
-    acc[name] = () => <BottleList name={name} type={type} />;
+    acc[name] = () => <BottleList />;
     return acc;
   },
   {},
@@ -38,13 +37,7 @@ export default function HomeScreen() {
         tabBarLabelStyle: {fontSize: 12},
         tabBarScrollEnabled: true,
         tabBarItemStyle: {width: 88},
-        // tabBarActiveTintColor: colors.gray[990],
-        // tabBarInactiveTintColor: colors.gray[700],
         tabBarIndicatorStyle: {
-          borderBottomColor: 'red',
-          borderColor: 'red',
-          shadowColor: 'red',
-          borderEndColor: 'red',
           backgroundColor: colors.primary,
         },
       }}>
@@ -58,16 +51,3 @@ export default function HomeScreen() {
     </Slider.Navigator>
   );
 }
-
-const BottleList = ({name, type}) => {
-  const navigation = useNavigation();
-  return (
-    <View>
-      <Text>{name}</Text>
-      <Button
-        title="Go Detail"
-        onPress={() => navigation.navigate('Detail', {type})}
-      />
-    </View>
-  );
-};
