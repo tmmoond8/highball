@@ -11,7 +11,6 @@ const TYPES_OF_ALCOHOL = [
   {name: '진', type: 'gin'},
   {name: '보드카', type: 'vodka'},
   {name: '데낄라', type: 'tequila'},
-  {name: '위스키', type: 'whiskey'},
   {name: '리큐르', type: 'liqueur'},
   {name: '럼', type: 'rum'},
   {name: ' 블렌디드  위스키', type: 'blendedWhiskey'},
@@ -24,12 +23,18 @@ const TYPES_OF_ALCOHOL = [
 
 const renderBottleList = data =>
   Object.values(TYPES_OF_ALCOHOL).reduce((acc, {name, type}) => {
-    acc[name] = () => <BottleList data={data} />;
+    acc[name] = () => (
+      <BottleList
+        data={data.filter(({category}) => category === type)}
+        key={type}
+      />
+    );
     return acc;
   }, {});
 
 export default function HomeScreen() {
   const [sheet, setSheet] = React.useState([]);
+  // console.log('sheet', sheet);
   React.useEffect(() => {
     fetch(`${SHEET_URL}?sheetName=highball`)
       .then(r => r.json())

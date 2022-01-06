@@ -13,8 +13,11 @@ const BottleItem = ({bottle, onPress}) => {
       />
       <View style={styles.content}>
         <Text style={styles.title}>{`${model} ${submodel} ${age}`}</Text>
-        <Text
-          style={styles.price}>{`${price.toLocaleString()}원 ${volume}`}</Text>
+        <View style={styles.description}>
+          <Text style={styles.price}>{`${price.toLocaleString()}원`}</Text>
+          <Text style={styles.volume}>{volume}</Text>
+          <View />
+        </View>
       </View>
     </Pressable>
   );
@@ -28,7 +31,8 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
   content: {
-    justifyContent: 'center',
+    flex: 1,
+    justifyContent: 'flex-start',
   },
   title: {
     color: '#263238',
@@ -42,7 +46,14 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     marginTop: 12,
   },
+  volume: {
+    color: '#263323',
+    marginTop: 10,
+  },
   description: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     color: '#37474f',
     fontSize: 16,
     lineHeight: 21,
@@ -56,12 +67,3 @@ const styles = StyleSheet.create({
 });
 
 export default BottleItem;
-
-function truncate(text) {
-  // 정규식을 사용해 모든 줄 바꿈 문자 제거
-  const replaced = text.replace(/\n/g, ' ');
-  if (replaced.length <= 100) {
-    return replaced;
-  }
-  return replaced.slice(0, 100).concat('...');
-}
