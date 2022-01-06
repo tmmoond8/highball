@@ -1,10 +1,18 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {Button, View, Text} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 export default function CocktailScreen() {
+  const navigation = useNavigation();
   return (
     <View>
-      <Text>Cocktail</Text>
+      <Text>Cocktail Screen</Text>
+      <Button
+        title="sign in"
+        onPress={() => {
+          navigation.navigate('SignIn');
+        }}
+      />
     </View>
   );
 }
