@@ -1,16 +1,13 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import HomeScreen from './HomeScreen';
-import SearchScreen from './SearchScreen';
-import TimelineScreen from './TimelineScreen';
-import CocktailScreen from './CocktailScreen';
-import ScreenLayout from '../components/ScreenLayout';
-import {colors} from '../styles';
+import * as Screens from '..';
+import ScreenLayout from '../../components/ScreenLayout';
+import {colors} from '../../styles';
 
 const Tab = createBottomTabNavigator();
 
-export default function MainScreen() {
+export default function MainStack() {
   return (
     <ScreenLayout>
       <Tab.Navigator
@@ -21,7 +18,7 @@ export default function MainScreen() {
         }}>
         <Tab.Screen
           name="Home"
-          component={HomeScreen}
+          component={Screens.Home}
           options={{
             headerShown: false,
             tabBarIcon: ({color, size}) => (
@@ -31,7 +28,7 @@ export default function MainScreen() {
         />
         <Tab.Screen
           name="Search"
-          component={SearchScreen}
+          component={Screens.Search}
           options={{
             headerShown: false,
             tabBarIcon: ({color, size}) => (
@@ -41,7 +38,7 @@ export default function MainScreen() {
         />
         <Tab.Screen
           name="Timeline"
-          component={TimelineScreen}
+          component={Screens.Timeline}
           options={{
             headerShown: false,
             tabBarIcon: ({color, size}) => (
@@ -51,7 +48,7 @@ export default function MainScreen() {
         />
         <Tab.Screen
           name="Cocktail"
-          component={CocktailScreen}
+          component={Screens.Cocktail}
           options={{
             headerShown: false,
             tabBarIcon: ({color, size}) => (

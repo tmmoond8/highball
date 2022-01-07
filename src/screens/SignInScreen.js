@@ -7,7 +7,7 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import {SignIn} from '../libs/auth';
-import {useUserContext} from '../hooks/useUserContext';
+import {useUserContext} from '../contexts/userContext';
 
 export default function SignInScreen() {
   const [isProcessing, setIsProcessing] = React.useState(false);
