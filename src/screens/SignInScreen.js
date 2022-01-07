@@ -1,24 +1,24 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, StatusBar} from 'react-native';
 import {FIREBASE_WEB_CLIENT_ID} from '@env';
 import {
   GoogleSignin,
   GoogleSigninButton,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import {SignIn} from '../libs/auth';
+import {useUserContext} from '../hooks/useUserContext';
 
 export default function SignInScreen() {
-  const [userInfo, setUserInfo] = React.useState(null);
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [isProcessing, setIsProcessing] = React.useState(false);
+  const {setUser} = useUserContext();
   const handleSignIn = async () => {
     try {
       setIsProcessing(true);
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      console.log('userInfo', userInfo);
-      setUserInfo(userInfo);
-      setIsLoggedIn(true);
+      setUser(userInfo);
+      SignIn(userInfo.idToken);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
@@ -32,6 +32,7 @@ export default function SignInScreen() {
     }
   };
   React.useEffect(() => {
+    StatusBar.setBarStyle('dark-content');
     GoogleSignin.configure({
       accountName: 'abc',
       webClientId: FIREBASE_WEB_CLIENT_ID,
@@ -41,6 +42,7 @@ export default function SignInScreen() {
 
   return (
     <View style={styles.fullScreen}>
+      <Text style={styles.title}>HighBall Sign In</Text>
       <GoogleSigninButton
         style={{width: 192, height: 48}}
         size={GoogleSigninButton.Size.Wide}
@@ -57,6 +59,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  title: {
+    fontSize: 32,
+    marginBottom: 50,
   },
   button: {
     backgroundColor: 'red',

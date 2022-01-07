@@ -1,7 +1,7 @@
 import auth from '@react-native-firebase/auth';
 
-export function SignIn({email, password}) {
-  const credential = auth.GoogleAuthProvider.credential('{token}');
+export async function SignIn(idToken) {
+  const credential = await auth.GoogleAuthProvider.credential(idToken);
   const userCredential = auth().signInWithCredential(credential);
   return userCredential;
 }
