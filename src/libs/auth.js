@@ -5,3 +5,5 @@ export async function SignIn(idToken) {
   const userCredential = auth().signInWithCredential(credential);
   return userCredential;
 }
+
+export const subscribeAuth = callback => auth().onAuthStateChanged(callback);

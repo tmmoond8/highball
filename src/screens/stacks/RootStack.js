@@ -3,11 +3,28 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MainStack from './MainStack';
 import * as Screens from '..';
 import {useUserContext} from '../../contexts/userContext';
+import {subscribeAuth} from '../../libs/auth';
+import {getUser} from '../../libs/users';
 
 const Stack = createNativeStackNavigator();
 
 export default function RootStack() {
-  const {user} = useUserContext();
+  const {user, setUser} = useUserContext();
+  React.useEffect(() => {
+    // 컴포넌트 첫 로딩 시 로그인 상태를 확인하고 UserContext에 적용
+    const unsubscribe = subscribeAuth(async currentUser => {
+      unsubscribe();
+      if (!currentUser) {
+        return;
+      }
+      console.log('currentUser', currentUser);
+      // const profile = await getUser(currentUser.uid);
+      // if (!profile) {
+      //   return;
+      // }
+      // setUser(profile);
+    });
+  }, [setUser]);
   return (
     <Stack.Navigator initialRouteName="Main">
       <Stack.Screen
