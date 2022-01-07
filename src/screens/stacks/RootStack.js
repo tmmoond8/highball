@@ -17,12 +17,11 @@ export default function RootStack() {
       if (!currentUser) {
         return;
       }
-      console.log('currentUser', currentUser);
-      // const profile = await getUser(currentUser.uid);
-      // if (!profile) {
-      //   return;
-      // }
-      // setUser(profile);
+      const profile = await getUser(currentUser.uid);
+      if (!profile) {
+        return;
+      }
+      setUser(profile);
     });
   }, [setUser]);
   return (

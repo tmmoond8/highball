@@ -71,6 +71,7 @@ export default function Profile({userId}) {
 const styles = StyleSheet.create({
   block: {
     flex: 1,
+    backgroundColor: 'white',
   },
   spinner: {flex: 1, justifyContent: 'center'},
   userInfo: {

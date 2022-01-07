@@ -8,6 +8,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 import {SignIn} from '../libs/auth';
 import {useUserContext} from '../contexts/userContext';
+import {getUser, createUser} from '../libs/users';
 
 export default function SignInScreen() {
   const [isProcessing, setIsProcessing] = React.useState(false);
@@ -16,10 +17,24 @@ export default function SignInScreen() {
     try {
       setIsProcessing(true);
       await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      setUser(userInfo);
-      SignIn(userInfo.idToken);
+      const {idToken} = await GoogleSignin.signIn();
+      const {user} = await SignIn(idToken);
+      const currentUser = await getUser(user.uid);
+      if (!currentUser) {
+        await createUser({
+          id: user.uid,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        });
+      }
+      setUser(
+        currentUser ?? {
+          ...user,
+          id: user.uid,
+        },
+      );
     } catch (error) {
+      console.log('error', error);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
       } else if (error.code === statusCodes.IN_PROGRESS) {
