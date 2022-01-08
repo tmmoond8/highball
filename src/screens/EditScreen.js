@@ -10,9 +10,13 @@ import {
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import AutoHeightImage from 'react-native-auto-height-image';
+import storage from '@react-native-firebase/storage';
+import {v4 as uuid} from 'uuid';
+import {useUserContext} from '../contexts/userContext';
 import ScreenLayout from '../components/ScreenLayout';
 import IconButton from '../components/IconButton';
 import {useUiContext} from '../contexts/uiContext';
+import {createPost} from '../libs/posts';
 
 const imagePickerOption = {
   mediaType: 'photo',
@@ -24,19 +28,35 @@ const imagePickerOption = {
 export default function EditScreen({navigation, route}) {
   const postId = route?.params?.postId;
   const isNew = !postId;
+  const {user} = useUserContext();
   const {modal} = useUiContext();
   const {width} = useWindowDimensions();
   const [contents, setContents] = React.useState('');
-  const [imageUrl, setImageUrl] = React.useState(null);
+  const [image, setImage] = React.useState(null);
   const [isKeyboardOpen, setIsKeyboardOpen] = React.useState(false);
+
+  const handleSubmit = React.useCallback(async () => {
+    const extension = image.fileName.split('.').pop();
+    const reference = storage().ref(`/photo/${user.id}/${uuid()}.${extension}`);
+    if (Platform.OS === 'android') {
+      await reference.putString(image.base64, 'base64', {
+        contentType: image.type,
+      });
+    } else {
+      await reference.putFile(image.uri);
+    }
+    const photoURL = await reference.getDownloadURL();
+    await createPost({contents, photoURL, user});
+    navigation.pop();
+  }, [image, user, navigation, contents]);
 
   React.useEffect(() => {
     const handlePickImage = res => {
       if (!res || res.didCancel) {
         return;
       }
-      if (res.assets[0]?.uri) {
-        setImageUrl(res.assets[0].uri);
+      if (res.assets[0]) {
+        setImage(res.assets[0]);
       }
     };
     const handleLaunchCamera = () => {
@@ -71,11 +91,11 @@ export default function EditScreen({navigation, route}) {
               paddingRight: 16,
             }}
           />
-          <IconButton name="check" onPress={() => console.log('aaa')} />
+          <IconButton name="check" onPress={handleSubmit} />
         </>
       ),
     });
-  }, [isNew, modal, navigation]);
+  }, [isNew, modal, navigation, handleSubmit]);
 
   React.useEffect(() => {
     StatusBar.setBarStyle('dark-content');
@@ -97,7 +117,7 @@ export default function EditScreen({navigation, route}) {
   return (
     <ScreenLayout>
       <View style={styles.block}>
-        {imageUrl && (
+        {image && (
           <AutoHeightImage
             style={[
               isKeyboardOpen && {
@@ -106,7 +126,7 @@ export default function EditScreen({navigation, route}) {
                 top: 16,
               },
             ]}
-            source={{uri: imageUrl}}
+            source={{uri: image.uri}}
             width={!isKeyboardOpen ? width : 120}
           />
         )}

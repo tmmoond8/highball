@@ -7,11 +7,11 @@ import {useUserContext} from '../contexts/userContext';
 
 const postsCollection = firestore().collection('posts');
 
-export function createPost({user, photoURL, description}) {
+export function createPost({user, photoURL, contents}) {
   return postsCollection.add({
     user,
     photoURL,
-    description,
+    contents,
     createAt: firestore.FieldValue.serverTimestamp(),
   });
 }
