@@ -2,11 +2,21 @@ import React from 'react';
 import {View, StatusBar, TextInput, StyleSheet} from 'react-native';
 import ScreenLayout from '../components/ScreenLayout';
 import IconButton from '../components/IconButton';
+import {useUiContext} from '../contexts/uiContext';
 
 export default function EditScreen({navigation, route}) {
   const postId = route?.params?.postId;
   const isNew = !postId;
+  const {modal} = useUiContext();
   const [contents, setContents] = React.useState('');
+
+  const handleLaunchCamera = () => {
+    console.log('카메라로 촬영하기');
+  };
+
+  const handleLaunchImageLibrary = () => {
+    console.log('사진 선택하기');
+  };
 
   React.useEffect(() => {
     navigation.setOptions({
@@ -15,7 +25,20 @@ export default function EditScreen({navigation, route}) {
         <>
           <IconButton
             name="camera-alt"
-            onPress={() => console.log('aaa')}
+            onPress={() => {
+              modal.open([
+                {
+                  icon: 'camera-alt',
+                  text: '카메라로 촬영하기',
+                  onPress: handleLaunchCamera,
+                },
+                {
+                  icon: 'photo',
+                  text: '사진 선택하기',
+                  onPress: handleLaunchImageLibrary,
+                },
+              ]);
+            }}
             _styles={{
               paddingRight: 16,
             }}
@@ -24,7 +47,7 @@ export default function EditScreen({navigation, route}) {
         </>
       ),
     });
-  }, [isNew, navigation]);
+  }, [isNew, modal, navigation]);
 
   React.useEffect(() => {
     StatusBar.setBarStyle('dark-content');
