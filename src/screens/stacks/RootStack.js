@@ -1,6 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import MainStack from './MainStack';
+import MainTabStack from './MainTabStack';
 import * as Screens from '..';
 import {useUserContext} from '../../contexts/userContext';
 import {subscribeAuth} from '../../libs/auth';
@@ -27,8 +27,8 @@ export default function RootStack() {
   return (
     <Stack.Navigator initialRouteName="Main">
       <Stack.Screen
-        name="Main"
-        component={MainStack}
+        name="MainTab"
+        component={MainTabStack}
         options={{
           headerShown: false,
         }}

@@ -1,10 +1,58 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {
+  Button,
+  FlatList,
+  ActivityIndicator,
+  RefreshControl,
+  StyleSheet,
+} from 'react-native';
+import PostCard from '../components/PostCard';
+import {usePosts} from '../libs/posts';
+import PostingButton from '../components/PostingButton';
 
-export default function TimelineScreen() {
+export default function FeedScreen() {
+  const {posts, noMorePost, refreshing, handleRefresh, handleLoadMore} =
+    usePosts();
+
+  const renderItem = React.useMemo(
+    () =>
+      ({item}) =>
+        item ? <PostCard {...item} /> : null,
+    [],
+  );
+
   return (
-    <View>
-      <Text>Timeline</Text>
-    </View>
+    <>
+      <FlatList
+        data={posts}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.container}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.75}
+        ListFooterComponent={
+          !noMorePost && (
+            <ActivityIndicator
+              style={styles.spinner}
+              size={21}
+              color="#6200ee"
+            />
+          )
+        }
+        refreshControl={
+          <RefreshControl onRefresh={handleRefresh} refreshing={refreshing} />
+        }
+      />
+      <PostingButton />
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 48,
+  },
+  spinner: {
+    height: 64,
+  },
+});

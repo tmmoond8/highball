@@ -8,7 +8,7 @@ import {colors} from '../../styles';
 
 const Tab = createBottomTabNavigator();
 
-export default function MainStack() {
+export default function MainTabStack() {
   return (
     <ScreenLayout>
       <Tab.Navigator
