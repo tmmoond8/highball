@@ -2,11 +2,16 @@ import React from 'react';
 import {Platform, View, Pressable, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {colors} from '../styles';
+import {useNavigation} from '@react-navigation/native';
 
 export default function PostingButton() {
+  const navigation = useNavigation();
   return (
     <View style={styles.button}>
-      <Pressable>
+      <Pressable
+        onPress={() => {
+          navigation.navigate('Edit');
+        }}>
         <Icon name="add" color="white" size={32} />
       </Pressable>
     </View>

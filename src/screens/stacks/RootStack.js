@@ -40,12 +40,23 @@ export default function RootStack() {
           headerShown: false,
         }}
       />
+      {user && (
+        <Stack.Screen
+          name="Edit"
+          component={Screens.Edit}
+          options={{
+            title: '새 게시물 작성',
+            headerBackTitle: '뒤로가기',
+          }}
+        />
+      )}
       {!user && (
         <Stack.Screen
           name="SignIn"
           component={Screens.SignIn}
           options={{
-            headerShown: false,
+            title: 'Sign In',
+            headerBackTitle: '뒤로가기',
           }}
         />
       )}
