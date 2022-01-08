@@ -11,6 +11,7 @@ export default function BottleList(props) {
       data={props.data}
       renderItem={bottle => (
         <BottleItem
+          key={bottle.item.id}
           bottle={bottle.item}
           onPress={() => navigation.navigate('Detail', {id: bottle.item.id})}
         />
