@@ -1,5 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
+import {Button, Text, View, StyleSheet} from 'react-native';
 // import IconRightButton from '../components/IconRightButton';
 import Profile from '../components/Profile';
 import {useUserContext} from '../contexts/userContext';
@@ -10,7 +11,7 @@ export default function MyProfileScreen() {
 
   React.useEffect(() => {
     navigation.setOptions({
-      title: user?.displayName ?? '마이 프로필',
+      title: user?.displayName ?? '',
       // headerRight: () => (
       //   <IconRightButton
       //     name="settings"
@@ -19,6 +20,40 @@ export default function MyProfileScreen() {
       // ),
     });
   }, [navigation, user]);
+  console.log('user', user);
 
-  return <Profile userId={user.id} />;
+  return (
+    <>
+      {user && <Profile userId={user.id} />}
+      {!user && <EmptyProfile />}
+    </>
+  );
 }
+
+function EmptyProfile() {
+  const navigation = useNavigation();
+  return (
+    <View style={styles.empty}>
+      <Text style={styles.emtpyTitle}>아직 회원이 아니신가요?</Text>
+      <Button
+        title="Sign In"
+        onPress={() => {
+          navigation.navigate('SignIn');
+        }}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  empty: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  emtpyTitle: {
+    fontSize: 24,
+    marginBottom: 24,
+  },
+});

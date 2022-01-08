@@ -34,12 +34,12 @@ const renderBottleList = data =>
 
 export default function HomeScreen() {
   const [sheet, setSheet] = React.useState([]);
-  // console.log('sheet', sheet);
   React.useEffect(() => {
     fetch(`${SHEET_URL}?sheetName=highball`)
       .then(r => r.json())
       .then(d => setSheet(d.data));
   }, []);
+
   return (
     <Slider.Navigator
       initialRouteName="whiskey"

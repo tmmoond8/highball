@@ -119,12 +119,14 @@ export function usePosts(userId) {
   );
 
   React.useEffect(() => {
-    getPosts({userId}).then(_posts => {
-      setPosts(_posts);
-      if (_posts.length < PAGE_SIZE) {
-        setNoMorePost(true);
-      }
-    });
+    if (userId) {
+      getPosts({userId}).then(_posts => {
+        setPosts(_posts);
+        if (_posts.length < PAGE_SIZE) {
+          setNoMorePost(true);
+        }
+      });
+    }
   }, [userId]);
 
   usePostsEventEffect({

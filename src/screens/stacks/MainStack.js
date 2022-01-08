@@ -58,7 +58,7 @@ export default function MainStack() {
           }}
         />
         <Tab.Screen
-          name="MyProfile"
+          name="MyProfileStack"
           component={MyProfileStack}
           options={{
             headerShown: false,

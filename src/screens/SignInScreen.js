@@ -13,7 +13,7 @@ import {getUser, createUser} from '../libs/users';
 export default function SignInScreen() {
   const [isProcessing, setIsProcessing] = React.useState(false);
   const {setUser} = useUserContext();
-  const handleSignIn = async () => {
+  const handleGoogleSignIn = async () => {
     try {
       setIsProcessing(true);
       await GoogleSignin.hasPlayServices();
@@ -62,7 +62,7 @@ export default function SignInScreen() {
         style={{width: 192, height: 48}}
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Dark}
-        onPress={handleSignIn}
+        onPress={handleGoogleSignIn}
         disabled={isProcessing}
       />
     </View>
