@@ -1,8 +1,16 @@
 import React from 'react';
-import {View, StatusBar, TextInput, StyleSheet} from 'react-native';
+import {View, StatusBar, TextInput, StyleSheet, Platform} from 'react-native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ScreenLayout from '../components/ScreenLayout';
 import IconButton from '../components/IconButton';
 import {useUiContext} from '../contexts/uiContext';
+
+const imagePickerOption = {
+  mediaType: 'photo',
+  maxWidth: 768,
+  maxHeight: 768,
+  includeBase64: Platform.OS === 'android',
+};
 
 export default function EditScreen({navigation, route}) {
   const postId = route?.params?.postId;
@@ -10,12 +18,21 @@ export default function EditScreen({navigation, route}) {
   const {modal} = useUiContext();
   const [contents, setContents] = React.useState('');
 
+  const handlePickImage = res => {
+    if (!res || res.didCancel) {
+      return;
+    }
+    console.log(res);
+  };
+
   const handleLaunchCamera = () => {
     console.log('카메라로 촬영하기');
+    launchCamera(imagePickerOption, handlePickImage);
   };
 
   const handleLaunchImageLibrary = () => {
     console.log('사진 선택하기');
+    launchImageLibrary(imagePickerOption, handlePickImage);
   };
 
   React.useEffect(() => {
@@ -47,7 +64,7 @@ export default function EditScreen({navigation, route}) {
         </>
       ),
     });
-  }, [isNew, modal, navigation]);
+  }, [handleLaunchCamera, handleLaunchImageLibrary, isNew, modal, navigation]);
 
   React.useEffect(() => {
     StatusBar.setBarStyle('dark-content');

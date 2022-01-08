@@ -10,12 +10,12 @@ export function UiContextProvider({children}) {
     open: _actionModalData => {
       ActionSheetIOS.showActionSheetWithOptions(
         {
-          options: [...actionModalData.map(({text}) => text), '취소'],
-          cancelButtonIndex: actionModalData.length,
+          options: [..._actionModalData.map(({text}) => text), '취소'],
+          cancelButtonIndex: _actionModalData.length,
         },
         buttonIndex => {
-          if (actionModalData[buttonIndex].onPress) {
-            actionModalData[buttonIndex].onPress();
+          if (_actionModalData && _actionModalData[buttonIndex]?.onPress) {
+            _actionModalData[buttonIndex].onPress();
           }
         },
       );
