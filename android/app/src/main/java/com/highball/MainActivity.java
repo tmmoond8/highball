@@ -1,4 +1,4 @@
-package com.highball;
+package com.tmmoond8.highball;
 
 import com.facebook.react.ReactActivity;
 
