@@ -1,6 +1,15 @@
 import React from 'react';
-import {View, StatusBar, TextInput, StyleSheet, Platform} from 'react-native';
+import {
+  View,
+  StatusBar,
+  TextInput,
+  StyleSheet,
+  Keyboard,
+  useWindowDimensions,
+  Platform,
+} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import AutoHeightImage from 'react-native-auto-height-image';
 import ScreenLayout from '../components/ScreenLayout';
 import IconButton from '../components/IconButton';
 import {useUiContext} from '../contexts/uiContext';
@@ -16,26 +25,28 @@ export default function EditScreen({navigation, route}) {
   const postId = route?.params?.postId;
   const isNew = !postId;
   const {modal} = useUiContext();
+  const {width} = useWindowDimensions();
   const [contents, setContents] = React.useState('');
-
-  const handlePickImage = res => {
-    if (!res || res.didCancel) {
-      return;
-    }
-    console.log(res);
-  };
-
-  const handleLaunchCamera = () => {
-    console.log('카메라로 촬영하기');
-    launchCamera(imagePickerOption, handlePickImage);
-  };
-
-  const handleLaunchImageLibrary = () => {
-    console.log('사진 선택하기');
-    launchImageLibrary(imagePickerOption, handlePickImage);
-  };
+  const [imageUrl, setImageUrl] = React.useState(null);
+  const [isKeyboardOpen, setIsKeyboardOpen] = React.useState(false);
 
   React.useEffect(() => {
+    const handlePickImage = res => {
+      if (!res || res.didCancel) {
+        return;
+      }
+      if (res.assets[0]?.uri) {
+        setImageUrl(res.assets[0].uri);
+      }
+    };
+    const handleLaunchCamera = () => {
+      launchCamera(imagePickerOption, handlePickImage);
+    };
+
+    const handleLaunchImageLibrary = () => {
+      launchImageLibrary(imagePickerOption, handlePickImage);
+    };
+
     navigation.setOptions({
       title: isNew ? '새 게시물 작성' : '게시물 수정',
       headerRight: () => (
@@ -64,15 +75,41 @@ export default function EditScreen({navigation, route}) {
         </>
       ),
     });
-  }, [handleLaunchCamera, handleLaunchImageLibrary, isNew, modal, navigation]);
+  }, [isNew, modal, navigation]);
 
   React.useEffect(() => {
     StatusBar.setBarStyle('dark-content');
   }, []);
 
+  React.useEffect(() => {
+    const didShow = Keyboard.addListener('keyboardDidShow', () =>
+      setIsKeyboardOpen(true),
+    );
+    const didHide = Keyboard.addListener('keyboardDidHide', () =>
+      setIsKeyboardOpen(false),
+    );
+    return () => {
+      didShow.remove();
+      didHide.remove();
+    };
+  }, []);
+
   return (
     <ScreenLayout>
       <View style={styles.block}>
+        {imageUrl && (
+          <AutoHeightImage
+            style={[
+              isKeyboardOpen && {
+                position: 'absolute',
+                right: 16,
+                top: 16,
+              },
+            ]}
+            source={{uri: imageUrl}}
+            width={!isKeyboardOpen ? width : 120}
+          />
+        )}
         <TextInput
           style={styles.input}
           multiline
@@ -93,12 +130,13 @@ const styles = StyleSheet.create({
   block: {
     flex: 1,
     paddingTop: 24,
-    paddingLeft: 24,
-    paddingRight: 24,
     paddingBottom: 104,
   },
   input: {
     flex: 1,
+    paddingTop: 24,
+    paddingLeft: 24,
+    paddingRight: 24,
     paddingBottom: 0,
   },
 });
