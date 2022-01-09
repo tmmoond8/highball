@@ -8,7 +8,7 @@ import {useUserContext} from '../contexts/userContext';
 // import ActionSheetModal from './ActionSheetModal';
 import {usePostActions} from '../libs/posts';
 
-export default function PostCard({user, photoURL, description, createdAt, id}) {
+export default function PostCard({user, photoURL, contents, createdAt, id}) {
   const navigation = useNavigation();
   // const {isSelecting, handlePressMore, handleClose, actions} = usePostActions({
   //   id,
@@ -54,7 +54,7 @@ export default function PostCard({user, photoURL, description, createdAt, id}) {
           resizeMode="cover"
         />
         <View style={styles.paddingBlock}>
-          <Text style={styles.description}>{description}</Text>
+          <Text style={styles.contents}>{contents}</Text>
           <Text date={date} style={styles.date}>
             {date.toLocaleString()}
           </Text>
@@ -72,7 +72,7 @@ export default function PostCard({user, photoURL, description, createdAt, id}) {
 const styles = StyleSheet.create({
   block: {
     paddingTop: 16,
-    paddingBottom: 16,
+    paddingBottom: 42,
   },
   avatar: {
     width: 32,
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     marginBottom: 16,
   },
-  description: {
+  contents: {
     fontSize: 16,
     lineHeight: 24,
     marginBottom: 8,
