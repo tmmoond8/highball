@@ -36,6 +36,7 @@ export default function EditScreen({navigation, route}) {
   const [isKeyboardOpen, setIsKeyboardOpen] = React.useState(false);
 
   const handleSubmit = React.useCallback(async () => {
+    navigation.pop();
     const extension = image.fileName.split('.').pop();
     const reference = storage().ref(`/photo/${user.id}/${uuid()}.${extension}`);
     if (Platform.OS === 'android') {
@@ -47,7 +48,6 @@ export default function EditScreen({navigation, route}) {
     }
     const photoURL = await reference.getDownloadURL();
     await createPost({contents, photoURL, user});
-    navigation.pop();
   }, [image, user, navigation, contents]);
 
   React.useEffect(() => {

@@ -12,14 +12,14 @@ export function createPost({user, photoURL, contents}) {
     user,
     photoURL,
     contents,
-    createAt: firestore.FieldValue.serverTimestamp(),
+    createdAt: firestore.FieldValue.serverTimestamp(),
   });
 }
 
 export const PAGE_SIZE = 12;
 
 export async function getPosts({userId, mode, id} = {}) {
-  let query = postsCollection.orderBy('createAt', 'desc').limit(PAGE_SIZE);
+  let query = postsCollection.orderBy('createdAt', 'desc').limit(PAGE_SIZE);
   if (userId) {
     query = query.where('user.id', '==', userId);
   }

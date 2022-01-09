@@ -22,7 +22,7 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
   );
   const handleOpenProfile = () => {
     if (isMyPost) {
-      navigation.navigate('MyProfile');
+      return navigation.navigate('MyProfile');
     }
     navigation.navigate('Profile', {
       userId: user.id,

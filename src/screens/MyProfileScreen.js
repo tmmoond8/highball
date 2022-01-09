@@ -20,7 +20,6 @@ export default function MyProfileScreen() {
       // ),
     });
   }, [navigation, user]);
-  console.log('user', user);
 
   return (
     <>

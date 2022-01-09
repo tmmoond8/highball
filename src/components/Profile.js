@@ -4,10 +4,10 @@ import {
   FlatList,
   Text,
   View,
-  // RefreshControl,
+  RefreshControl,
   StyleSheet,
 } from 'react-native';
-// import {usePosts} from '../libs/posts';
+import {usePosts} from '../libs/posts';
 import {getUser} from '../libs/users';
 import {getImageUrl} from '../libs/utils';
 import Avatar from './Avatar';
@@ -15,8 +15,8 @@ import PostGridItem from './PostGridItem';
 
 export default function Profile({userId}) {
   const [user, setUser] = React.useState(null);
-  // const {posts, noMorePost, refreshing, handleLoadMore, handleRefresh} =
-  //   usePosts(userId);
+  const {posts, noMorePost, refreshing, handleLoadMore, handleRefresh} =
+    usePosts(userId);
 
   const renderItem = React.useMemo(() => {
     return ({item}) => <PostGridItem post={item} />;
@@ -37,7 +37,7 @@ export default function Profile({userId}) {
   return (
     <FlatList
       style={styles.block}
-      data={[]}
+      data={posts}
       renderItem={renderItem}
       numColumns={3}
       keyExtractor={item => item.id}
@@ -52,20 +52,20 @@ export default function Profile({userId}) {
           <Text style={styles.userName}>{user.displayName}</Text>
         </View>
       }
-      // onEndReached={handleLoadMore}
-      // onEndReachedThreshold={0.25}
-      // ListFooterComponent={
-      //   !noMorePost && (
-      //     <ActivityIndicator
-      //       style={styles.bottomSpinner}
-      //       size={32}
-      //       color="#6200ee"
-      //     />
-      //   )
-      // }
-      // refreshControl={
-      //   <RefreshControl onRefresh={handleRefresh} refreshing={refreshing} />
-      // }
+      onEndReached={handleLoadMore}
+      onEndReachedThreshold={0.25}
+      ListFooterComponent={
+        !noMorePost && (
+          <ActivityIndicator
+            style={styles.bottomSpinner}
+            size={32}
+            color="#6200ee"
+          />
+        )
+      }
+      refreshControl={
+        <RefreshControl onRefresh={handleRefresh} refreshing={refreshing} />
+      }
     />
   );
 }
