@@ -12,6 +12,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import AutoHeightImage from 'react-native-auto-height-image';
 import storage from '@react-native-firebase/storage';
 import {v4 as uuid} from 'uuid';
+import eventBus from '../libs/eventBus';
 import {useUserContext} from '../contexts/userContext';
 import ScreenLayout from '../components/ScreenLayout';
 import IconButton from '../components/IconButton';
@@ -48,6 +49,7 @@ export default function EditScreen({navigation, route}) {
     }
     const photoURL = await reference.getDownloadURL();
     await createPost({contents, photoURL, user});
+    eventBus.emit('refresh');
   }, [image, user, navigation, contents]);
 
   React.useEffect(() => {

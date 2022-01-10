@@ -2,7 +2,7 @@ import React from 'react';
 import firestore from '@react-native-firebase/firestore';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {ActionSheetIOS, Platform} from 'react-native';
-import events from './events';
+import eventBus from './eventBus';
 import {useUserContext} from '../contexts/userContext';
 
 const postsCollection = firestore().collection('posts');
@@ -162,7 +162,7 @@ export function usePostActions({id, description} = {}) {
       navigation.pop();
     }
 
-    events.emit('removePost', id);
+    eventBus.emit('removePost', id);
   };
 
   const handlePressMore = () => {
@@ -221,14 +221,14 @@ export function usePostsEventEffect({
     if (!enabled) {
       return;
     }
-    events.addListener('refresh', onRefresh);
-    events.addListener('removePost', onRemovePost);
-    events.addListener('updatePost', onUpdatePost);
+    eventBus.addListener('refresh', onRefresh);
+    eventBus.addListener('removePost', onRemovePost);
+    eventBus.addListener('updatePost', onUpdatePost);
 
     return () => {
-      events.removeListener('refresh', onRefresh);
-      events.removeListener('removePost', onRemovePost);
-      events.removeListener('updatePost', onUpdatePost);
+      eventBus.removeListener('refresh', onRefresh);
+      eventBus.removeListener('removePost', onRemovePost);
+      eventBus.removeListener('updatePost', onUpdatePost);
     };
   }, [enabled, onRefresh, onRemovePost, onUpdatePost]);
 }
