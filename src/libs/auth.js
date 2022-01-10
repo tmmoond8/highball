@@ -7,3 +7,5 @@ export async function SignIn(idToken) {
 }
 
 export const subscribeAuth = callback => auth().onAuthStateChanged(callback);
+
+export const signOut = () => auth().signOut();

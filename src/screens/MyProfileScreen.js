@@ -1,25 +1,51 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Button, Text, View, StyleSheet} from 'react-native';
-// import IconRightButton from '../components/IconRightButton';
+import IconButton from '../components/IconButton';
 import Profile from '../components/Profile';
 import {useUserContext} from '../contexts/userContext';
+import {useUiContext} from '../contexts/uiContext';
+import {signOut} from '../libs/auth';
+import {colors} from '../styles';
 
 export default function MyProfileScreen() {
-  const {user} = useUserContext();
+  const {user, setUser} = useUserContext();
   const navigation = useNavigation();
+  const {modal} = useUiContext();
+
+  const handleLogout = () => {
+    signOut();
+    setUser(null);
+  };
 
   React.useEffect(() => {
-    navigation.setOptions({
-      title: user?.displayName ?? '',
-      // headerRight: () => (
-      //   <IconRightButton
-      //     name="settings"
-      //     onPress={() => navigation.push('Setting')}
-      //   />
-      // ),
-    });
-  }, [navigation, user]);
+    if (user) {
+      navigation.setOptions({
+        title: user.displayName ?? '',
+        headerRight: () => (
+          <IconButton
+            color={colors.primary}
+            name="settings"
+            onPress={() => {
+              modal.open([
+                {
+                  icon: 'logout',
+                  text: '로그아웃',
+                  onPress: handleLogout,
+                },
+              ]);
+            }}
+          />
+        ),
+      });
+    } else {
+      navigation.setOptions({
+        title: '',
+        headerRight: null,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modal, navigation, user]);
 
   return (
     <>
