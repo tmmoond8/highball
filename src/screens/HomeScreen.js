@@ -33,11 +33,21 @@ const renderBottleList = data =>
   }, {});
 
 export default function HomeScreen() {
+  console.log('home');
   const [sheet, setSheet] = React.useState([]);
   React.useEffect(() => {
+    console.log('fetch', `${SHEET_URL}?sheetName=highball`);
     fetch(`${SHEET_URL}?sheetName=highball`)
-      .then(r => r.json())
-      .then(d => setSheet(d.data));
+      .then(r => {
+        return r.json();
+      })
+      .then(d => {
+        setSheet(d.data);
+        console.log('ddd', d);
+      })
+      .catch(e => {
+        console.log('e', e);
+      });
   }, []);
 
   return (

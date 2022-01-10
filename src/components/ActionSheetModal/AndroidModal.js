@@ -11,22 +11,23 @@ export default function AndroidModal({visible, onClose, actions}) {
       onRequestClose={onClose}>
       <Pressable style={styles.background} onPress={onClose}>
         <View style={styles.whiteBox}>
-          {actions.map(action => (
-            <Pressable
-              style={styles.actionButton}
-              android_ripple={{color: '#eee'}}
-              onPress={() => {
-                action.onPress();
-                onClose();
-              }}>
-              <Icon
-                name={action.icon}
-                color="#757575"
-                size={24}
-                style={styles.icon}
-              />
-            </Pressable>
-          ))}
+          {actions &&
+            actions.map(action => (
+              <Pressable
+                style={styles.actionButton}
+                android_ripple={{color: '#eee'}}
+                onPress={() => {
+                  action.onPress();
+                  onClose();
+                }}>
+                <Icon
+                  name={action.icon}
+                  color="#757575"
+                  size={24}
+                  style={styles.icon}
+                />
+              </Pressable>
+            ))}
         </View>
       </Pressable>
     </Modal>
