@@ -17,7 +17,7 @@ import {useUserContext} from '../contexts/userContext';
 import ScreenLayout from '../components/ScreenLayout';
 import IconButton from '../components/IconButton';
 import {useUiContext} from '../contexts/uiContext';
-import {createPost} from '../libs/posts';
+import {createPost, updatePost} from '../libs/posts';
 
 const imagePickerOption = {
   mediaType: 'photo',
@@ -26,31 +26,58 @@ const imagePickerOption = {
   includeBase64: Platform.OS === 'android',
 };
 
-export default function EditScreen({navigation, route}) {
-  const postId = route?.params?.postId;
-  const isNew = !postId;
+export default function EditScren({navigation, route}) {
+  const params = route?.params ?? {};
+  const isNew = !params.id;
   const {user} = useUserContext();
   const {modal} = useUiContext();
   const {width} = useWindowDimensions();
-  const [contents, setContents] = React.useState('');
+  const [contents, setContents] = React.useState(params.contents ?? '');
   const [image, setImage] = React.useState(null);
   const [isKeyboardOpen, setIsKeyboardOpen] = React.useState(false);
 
   const handleSubmit = React.useCallback(async () => {
     navigation.pop();
-    const extension = image.fileName.split('.').pop();
-    const reference = storage().ref(`/photo/${user.id}/${uuid()}.${extension}`);
-    if (Platform.OS === 'android') {
-      await reference.putString(image.base64, 'base64', {
-        contentType: image.type,
-      });
+    if (isNew) {
+      const extension = image.fileName.split('.').pop();
+      const reference = storage().ref(
+        `/photo/${user.id}/${uuid()}.${extension}`,
+      );
+      if (Platform.OS === 'android') {
+        await reference.putString(image.base64, 'base64', {
+          contentType: image.type,
+        });
+      } else {
+        await reference.putFile(image.uri);
+      }
+      const photoURL = await reference.getDownloadURL();
+      await createPost({contents, photoURL, user});
+      eventBus.emit('refresh');
     } else {
-      await reference.putFile(image.uri);
+      // 업데이트 처리
+      let photoURL = params.photoURL;
+      if (image) {
+        const extension = image.fileName.split('.').pop();
+        const reference = storage().ref(
+          `/photo/${user.id}/${uuid()}.${extension}`,
+        );
+        if (Platform.OS === 'android') {
+          await reference.putString(image.base64, 'base64', {
+            contentType: image.type,
+          });
+        } else {
+          await reference.putFile(image.uri);
+        }
+        photoURL = await reference.getDownloadURL();
+      }
+      await updatePost({contents, photoURL, id: params.id});
+      eventBus.emit('updatePost', {
+        postId: params.id,
+        contents,
+        photoURL,
+      });
     }
-    const photoURL = await reference.getDownloadURL();
-    await createPost({contents, photoURL, user});
-    eventBus.emit('refresh');
-  }, [image, user, navigation, contents]);
+  }, [navigation, isNew, image, user, contents, params.photoURL, params.id]);
 
   React.useEffect(() => {
     const handlePickImage = res => {
@@ -119,7 +146,7 @@ export default function EditScreen({navigation, route}) {
   return (
     <ScreenLayout>
       <View style={styles.block}>
-        {image && (
+        {(image || params.photoURL) && (
           <AutoHeightImage
             style={[
               isKeyboardOpen && {
@@ -128,7 +155,7 @@ export default function EditScreen({navigation, route}) {
                 top: 16,
               },
             ]}
-            source={{uri: image.uri}}
+            source={{uri: image?.uri ?? params.photoURL}}
             width={!isKeyboardOpen ? width : 120}
           />
         )}

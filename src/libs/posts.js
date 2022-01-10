@@ -61,9 +61,10 @@ export function removePost(id) {
   return postsCollection.doc(id).delete();
 }
 
-export function updatePost({id, description}) {
+export function updatePost({id, contents, photoURL}) {
   return postsCollection.doc(id).update({
-    description,
+    contents,
+    photoURL,
   });
 }
 
@@ -108,11 +109,13 @@ export function usePosts(userId) {
   );
 
   const handleUpdate = React.useCallback(
-    ({postId, description}) => {
-      // id가  일치하는 포스트를 찾아서 description 변경
+    ({postId, contents, photoURL}) => {
+      // id가  일치하는 포스트를 찾아서 contents 변경
       const nextPosts = posts
         .filter(d => d)
-        .map(post => (post.id === postId ? {...post, description} : post));
+        .map(post =>
+          post.id === postId ? {...post, contents, photoURL} : post,
+        );
       setPosts(nextPosts);
     },
     [posts],
@@ -129,7 +132,7 @@ export function usePosts(userId) {
 
   usePostsEventEffect({
     onRefresh: handleRefresh,
-    onRemovePost: handleRefresh,
+    onRemovePost: handleRemove,
     onUpdatePost: handleUpdate,
     enabled: !userId || userId === user.id,
   });
@@ -144,14 +147,14 @@ export function usePosts(userId) {
   };
 }
 
-export function usePostActions({id, description} = {}) {
+export function usePostActions({id, contents} = {}) {
   const [isSelecting, setIsSelecting] = React.useState(false);
   const navigation = useNavigation();
   const route = useRoute();
   const edit = () => {
     navigation.navigate('Modify', {
       id,
-      description,
+      contents,
     });
   };
 

@@ -1,19 +1,17 @@
 import React from 'react';
-import {Text, Image, Pressable, View, StyleSheet} from 'react-native';
+import {Alert, Text, Image, Pressable, View, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {getImageUrl} from '../libs/utils';
 import Avatar from './Avatar';
 import {useUserContext} from '../contexts/userContext';
-// import ActionSheetModal from './ActionSheetModal';
-import {usePostActions} from '../libs/posts';
+import {useUiContext} from '../contexts/uiContext';
+import {removePost} from '../libs/posts';
+import eventBus from '../libs/eventBus';
 
 export default function PostCard({user, photoURL, contents, createdAt, id}) {
   const navigation = useNavigation();
-  // const {isSelecting, handlePressMore, handleClose, actions} = usePostActions({
-  //   id,
-  //   description,
-  // });
+  const {modal} = useUiContext();
   const {user: me} = useUserContext();
   const isMyPost = me.id === user.id;
   const date = React.useMemo(
@@ -29,6 +27,59 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
       displayName: user.displayName,
     });
   };
+
+  const moveModify = () => {
+    navigation.push('Edit', {
+      id,
+      photoURL,
+      contents,
+      createdAt,
+    });
+  };
+
+  const deletePost = () => {
+    Alert.alert(
+      '게시글을 삭제하시겠습니까?',
+      '삭제된 게시글은 복구되지 않습니다.',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '삭제',
+          onPress: () => {
+            removePost(id);
+            eventBus.emit('removePost', id);
+          },
+          style: 'default',
+        },
+      ],
+    );
+  };
+
+  const handleClickMore = () => {
+    if (isMyPost) {
+      modal.open([
+        {
+          icon: 'md-edit-note',
+          text: '수정',
+          onPress: moveModify,
+        },
+        {
+          icon: 'md-delete',
+          text: '삭제',
+          onPress: deletePost,
+        },
+      ]);
+      console.log('myPost');
+      // 수정/삭제 메뉴 노출
+    } else {
+      console.log('nono');
+      // 신고/사용자 거절
+    }
+  };
+
   return (
     <>
       <View style={styles.block}>
@@ -42,7 +93,7 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
             <Text style={styles.displayName}>{user.displayName}</Text>
           </Pressable>
           {isMyPost && (
-            <Pressable hitSlop={8} onPress={() => 'handlePressMore'}>
+            <Pressable hitSlop={8} onPress={handleClickMore}>
               <Icon name="more-vert" size={20} />
             </Pressable>
           )}
@@ -60,11 +111,6 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
           </Text>
         </View>
       </View>
-      {/* <ActionSheetModal
-        visible={isSelecting}
-        actions={actions}
-        onClose={handleClose}
-      /> */}
     </>
   );
 }
