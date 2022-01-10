@@ -5,3 +5,4 @@ export {default as Cocktail} from './CocktailScreen';
 export {default as Detail} from './DetailScreen';
 export {default as SignIn} from './SignInScreen';
 export {default as Edit} from './EditScreen';
+export {default as Profile} from './ProfileScreen';

@@ -40,6 +40,14 @@ export default function RootStack() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="Profile"
+        component={Screens.Profile}
+        options={{
+          title: '사용자 프로필',
+          headerBackTitle: '뒤로가기',
+        }}
+      />
       {user && (
         <Stack.Screen
           name="Edit"
