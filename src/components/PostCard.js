@@ -12,7 +12,7 @@ import eventBus from '../libs/eventBus';
 export default function PostCard({user, photoURL, contents, createdAt, id}) {
   const navigation = useNavigation();
   const {modal} = useUiContext();
-  const {user: me} = useUserContext();
+  const {user: me, report, unreport} = useUserContext();
   const isMyPost = me.id === user.id;
   const date = React.useMemo(
     () => (createdAt ? new Date(createdAt._seconds * 1000) : new Date()),
@@ -52,11 +52,44 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
             removePost(id);
             eventBus.emit('removePost', id);
           },
-          style: 'default',
+          style: 'destructive',
         },
       ],
     );
   };
+
+  const cancelReportPost = () => {
+    Alert.alert('게시글을 신고 해제 하시겠습니까?', '', [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {
+        text: '신고 해제',
+        onPress: () => {
+          unreport(id);
+        },
+        style: 'default',
+      },
+    ]);
+  };
+
+  const reportPost = () => {
+    Alert.alert('게시글을 신고하겠습니까?', '신고는 어쩌구 저쩌구', [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {
+        text: '신고',
+        onPress: () => {
+          report(id);
+        },
+        style: 'destructive',
+      },
+    ]);
+  };
+  const blockUser = () => {};
 
   const handleClickMore = () => {
     if (isMyPost) {
@@ -72,11 +105,27 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
           onPress: deletePost,
         },
       ]);
-      console.log('myPost');
       // 수정/삭제 메뉴 노출
     } else {
-      console.log('nono');
       // 신고/사용자 거절
+      modal.open([
+        me.reports.includes(id)
+          ? {
+              icon: 'md-outline-error',
+              text: '신고 해제',
+              onPress: cancelReportPost,
+            }
+          : {
+              icon: 'md-outline-error',
+              text: '신고',
+              onPress: reportPost,
+            },
+        {
+          icon: 'md-outline-block',
+          text: '차단',
+          onPress: blockUser,
+        },
+      ]);
     }
   };
 
@@ -92,11 +141,9 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
             />
             <Text style={styles.displayName}>{user.displayName}</Text>
           </Pressable>
-          {isMyPost && (
-            <Pressable hitSlop={8} onPress={handleClickMore}>
-              <Icon name="more-vert" size={20} />
-            </Pressable>
-          )}
+          <Pressable hitSlop={8} onPress={handleClickMore}>
+            <Icon name="more-vert" size={20} />
+          </Pressable>
         </View>
         <Image
           source={{uri: photoURL}}
