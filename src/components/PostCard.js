@@ -13,7 +13,7 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
   const navigation = useNavigation();
   const {modal} = useUiContext();
   const {user: me, report, unreport} = useUserContext();
-  const isMyPost = me.id === user.id;
+  const isMyPost = me?.id === user.id;
   const date = React.useMemo(
     () => (createdAt ? new Date(createdAt._seconds * 1000) : new Date()),
     [createdAt],
@@ -75,6 +75,9 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
   };
 
   const reportPost = () => {
+    if (!me) {
+      return navigation.push('SignIn');
+    }
     Alert.alert('게시글을 신고하겠습니까?', '신고는 어쩌구 저쩌구', [
       {
         text: '취소',
@@ -106,7 +109,7 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
       ]);
     } else {
       modal.open([
-        me.reports.includes(id)
+        me && me.reports.includes(id)
           ? {
               icon: 'md-outline-error',
               text: '신고 해제',
