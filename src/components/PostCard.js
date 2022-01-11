@@ -89,7 +89,6 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
       },
     ]);
   };
-  const blockUser = () => {};
 
   const handleClickMore = () => {
     if (isMyPost) {
@@ -105,9 +104,7 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
           onPress: deletePost,
         },
       ]);
-      // 수정/삭제 메뉴 노출
     } else {
-      // 신고/사용자 거절
       modal.open([
         me.reports.includes(id)
           ? {
@@ -120,11 +117,6 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
               text: '신고',
               onPress: reportPost,
             },
-        {
-          icon: 'md-outline-block',
-          text: '차단',
-          onPress: blockUser,
-        },
       ]);
     }
   };
