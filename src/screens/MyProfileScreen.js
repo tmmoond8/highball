@@ -21,10 +21,10 @@ export default function MyProfileScreen() {
   React.useEffect(() => {
     if (user) {
       navigation.setOptions({
-        title: user.displayName ?? '',
+        title: '',
         headerRight: () => (
           <IconButton
-            color={colors.primary}
+            color="#777"
             name="settings"
             onPress={() => {
               modal.open([
