@@ -1526,6 +1526,11 @@
   dependencies:
     eslint-visitor-keys "^1.1.0"
 
+"@woowa-babble/random-nickname@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@woowa-babble/random-nickname/-/random-nickname-1.0.2.tgz#785c2a03d3f3710f042e8034741e9513f4fdb333"
+  integrity sha512-7wdR7s0T6D3aDZROTgaFvA9aP8h9L2OtKHUPselBa3goBe8mweJD7oBub2urs/lJjy/4djqYdkJBEf3lETuG1Q==
+
 "@xmldom/xmldom@~0.7.0":
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.7.5.tgz#09fa51e356d07d0be200642b0e4f91d8e6dd408d"

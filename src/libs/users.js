@@ -1,12 +1,14 @@
 import firestore from '@react-native-firebase/firestore';
+import {getRandomNickname} from '@woowa-babble/random-nickname';
+import {getRandomProfileImageUrl} from '../libs/utils';
 
 export const usersCollection = firestore().collection('users');
 
 export function createUser({id, displayName, photoURL}) {
   return usersCollection.doc(id).set({
     id,
-    displayName,
-    photoURL,
+    displayName: displayName ?? getRandomNickname('animals'),
+    photoURL: photoURL ?? getRandomProfileImageUrl(),
     reports: [],
   });
 }
