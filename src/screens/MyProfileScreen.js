@@ -6,7 +6,6 @@ import Profile from '../components/Profile';
 import {useUserContext} from '../contexts/userContext';
 import {useUiContext} from '../contexts/uiContext';
 import {signOut} from '../libs/auth';
-import {colors} from '../styles';
 
 export default function MyProfileScreen() {
   const {user, setUser} = useUserContext();
