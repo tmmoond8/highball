@@ -1,16 +1,22 @@
 import React from 'react';
 import {Platform, View, Pressable, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {colors} from '../styles';
 import {useNavigation} from '@react-navigation/native';
+import {colors} from '../styles';
+import {useUserContext} from '../contexts/userContext';
 
 export default function PostingButton() {
+  const {user: me} = useUserContext();
   const navigation = useNavigation();
   return (
     <View style={styles.button}>
       <Pressable
         onPress={() => {
-          navigation.navigate('Edit');
+          if (me) {
+            navigation.navigate('Edit');
+          } else {
+            navigation.navigate('SignIn');
+          }
         }}>
         <Icon name="add" color="white" size={32} />
       </Pressable>
