@@ -1,6 +1,13 @@
 import React from 'react';
+import {
+  View,
+  ActivityIndicator,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {SHEET_URL} from '@env';
+import AsyncStorage from '@react-native-community/async-storage';
 import {colors} from '../styles';
 import BottleList from '../components/BottleList';
 
@@ -33,41 +40,98 @@ const renderBottleList = data =>
   }, {});
 
 export default function HomeScreen() {
-  console.log('home');
   const [sheet, setSheet] = React.useState([]);
+  const localSheet = React.useRef(null);
+  const [isFetching, setIsFetching] = React.useState(false);
+  const [minLoading, setMinLoading] = React.useState(false);
+  const dimensions = useWindowDimensions();
+
+  const isLoading = React.useMemo(
+    () => sheet.length === 0 || isFetching || minLoading,
+    [sheet, isFetching, minLoading],
+  );
   React.useEffect(() => {
-    console.log('fetch', `${SHEET_URL}?sheetName=highball`);
+    AsyncStorage.getItem('bottles').then(sheet => {
+      if (sheet) {
+        const _sheet = JSON.parse(sheet);
+        setSheet(_sheet);
+        localSheet.current = _sheet;
+      }
+    });
     fetch(`${SHEET_URL}?sheetName=highball`)
       .then(r => {
         return r.json();
       })
       .then(d => {
-        setSheet(d.data);
-        console.log('ddd', d);
+        if (JSON.stringify(d.data) !== JSON.stringify(localSheet.current)) {
+          setIsFetching(true);
+          setMinLoading(true);
+
+          AsyncStorage.setItem('bottles', JSON.stringify(d.data))
+            .then(() => {
+              setIsFetching(false);
+              setSheet(d.data);
+            })
+            .catch(e => {
+              setIsFetching(false);
+            });
+          setTimeout(() => {
+            setMinLoading(false);
+          }, 2000);
+        }
       })
       .catch(e => {
         console.log('e', e);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <Slider.Navigator
-      initialRouteName="whiskey"
-      screenOptions={{
-        tabBarLabelStyle: {fontSize: 12},
-        tabBarScrollEnabled: true,
-        tabBarItemStyle: {width: 88},
-        tabBarIndicatorStyle: {
-          backgroundColor: colors.primary,
-        },
-      }}>
-      {TYPES_OF_ALCOHOL.map(({name, type}, index) => (
-        <Slider.Screen
-          key={type}
-          name={name}
-          component={renderBottleList(sheet)[name]}
-        />
-      ))}
-    </Slider.Navigator>
+    <>
+      <Slider.Navigator
+        initialRouteName="whiskey"
+        screenOptions={{
+          tabBarLabelStyle: {fontSize: 12},
+          tabBarScrollEnabled: true,
+          tabBarItemStyle: {width: 88},
+          tabBarIndicatorStyle: {
+            backgroundColor: colors.primary,
+          },
+        }}>
+        {TYPES_OF_ALCOHOL.map(({name, type}, index) => (
+          <Slider.Screen
+            key={type}
+            name={name}
+            component={renderBottleList(sheet)[name]}
+          />
+        ))}
+      </Slider.Navigator>
+      {isLoading && (
+        <View
+          style={[
+            styles.block,
+            {
+              width: dimensions.width,
+              height: dimensions.height,
+            },
+          ]}>
+          <ActivityIndicator style={styles.loading} />
+        </View>
+      )}
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  block: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loading: {
+    width: 82,
+    height: 82,
+    backgroundColor: 'rgba(144, 144, 144, 0.2)',
+    borderRadius: 20,
+  },
+});
