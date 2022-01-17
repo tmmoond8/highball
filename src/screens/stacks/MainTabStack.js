@@ -47,7 +47,7 @@ export default function MainTabStack() {
             ),
           }}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Cocktail"
           component={Screens.Cocktail}
           options={{
@@ -56,7 +56,7 @@ export default function MainTabStack() {
               <Icon name="local-bar" color={color} size={size} />
             ),
           }}
-        />
+        /> */}
         <Tab.Screen
           name="MyProfileStack"
           component={MyProfileStack}
