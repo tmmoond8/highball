@@ -4,6 +4,8 @@ import {
   ActivityIndicator,
   RefreshControl,
   StyleSheet,
+  View,
+  useWindowDimensions,
 } from 'react-native';
 import PostCard from '../components/PostCard';
 import {usePosts} from '../libs/posts';
@@ -12,7 +14,7 @@ import PostingButton from '../components/PostingButton';
 export default function FeedScreen() {
   const {posts, noMorePost, refreshing, handleRefresh, handleLoadMore} =
     usePosts();
-
+  const dimensions = useWindowDimensions();
   const renderItem = React.useMemo(
     () =>
       ({item}) =>
@@ -31,11 +33,19 @@ export default function FeedScreen() {
         onEndReachedThreshold={0.75}
         ListFooterComponent={
           !noMorePost && (
-            <ActivityIndicator
-              style={styles.spinner}
-              size={21}
-              color="#6200ee"
-            />
+            <View
+              style={[
+                styles.spinnerWrapper,
+                {
+                  height: dimensions.height,
+                },
+              ]}>
+              <ActivityIndicator
+                style={styles.spinner}
+                size={21}
+                color="#6200ee"
+              />
+            </View>
           )
         }
         refreshControl={
@@ -50,6 +60,11 @@ export default function FeedScreen() {
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 48,
+  },
+  spinnerWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   spinner: {
     height: 64,
