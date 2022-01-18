@@ -10,17 +10,24 @@ import {
 import PostCard from '../components/PostCard';
 import {usePosts} from '../libs/posts';
 import PostingButton from '../components/PostingButton';
+import {useUserContext} from '../contexts/userContext';
 
 export default function FeedScreen() {
   const {posts, noMorePost, refreshing, handleRefresh, handleLoadMore} =
     usePosts();
+  const {user: me} = useUserContext();
   const dimensions = useWindowDimensions();
-  const renderItem = React.useMemo(
-    () =>
-      ({item}) =>
-        item ? <PostCard {...item} /> : null,
-    [],
-  );
+  const renderItem = ({item}) => {
+    if (!item) {
+      return null;
+    }
+    if (!me) {
+      return <PostCard {...item} />;
+    }
+    if (me) {
+      return me.blocks.includes(item.id) ? null : <PostCard {...item} />;
+    }
+  };
 
   return (
     <>

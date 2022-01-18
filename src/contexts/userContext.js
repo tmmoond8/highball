@@ -21,10 +21,18 @@ export function UserContextProvider({children}) {
       reports,
     });
   };
+  const blockUser = async userId => {
+    if (!user) return;
+    const blocks = await userUtils.blockUser({id: user.id, userId});
+    setUser({
+      ...user,
+      blocks,
+    });
+  };
   return (
     <UserContext.Provider
       children={children}
-      value={{user, setUser, report, unreport}}
+      value={{user, setUser, report, unreport, blockUser}}
     />
   );
 }

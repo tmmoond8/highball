@@ -12,7 +12,7 @@ import eventBus from '../libs/eventBus';
 export default function PostCard({user, photoURL, contents, createdAt, id}) {
   const navigation = useNavigation();
   const {modal} = useUiContext();
-  const {user: me, report, unreport} = useUserContext();
+  const {user: me, report, unreport, setUser} = useUserContext();
   const isMyPost = me?.id === user.id;
   const date = React.useMemo(
     () => (createdAt ? new Date(createdAt._seconds * 1000) : new Date()),
@@ -51,6 +51,31 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
           onPress: () => {
             removePost(id);
             eventBus.emit('removePost', id);
+          },
+          style: 'destructive',
+        },
+      ],
+    );
+  };
+
+  const blockUser = () => {
+    Alert.alert(
+      '사용자 차단',
+      '사용자를 차단합니다. 차단한 사용자는 나의 프로필 페이지에서 해제할 수 있습니다.',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '차단',
+          onPress: () => {
+            removePost(id);
+            setUser({
+              ...me,
+              blocks: me.blocks.concat(id),
+            });
+            eventBus.emit('refresh');
           },
           style: 'destructive',
         },
@@ -109,6 +134,11 @@ export default function PostCard({user, photoURL, contents, createdAt, id}) {
       ]);
     } else {
       modal.open([
+        {
+          icon: 'md-block',
+          text: '사용자 차단',
+          onPress: blockUser,
+        },
         me && me.reports.includes(id)
           ? {
               icon: 'md-outline-error',

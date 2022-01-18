@@ -10,6 +10,7 @@ export function createUser({id, displayName, photoURL}) {
     displayName: displayName ?? getRandomNickname('animals'),
     photoURL: photoURL ?? getRandomProfileImageUrl(),
     reports: [],
+    blocks: [],
   });
 }
 
@@ -40,4 +41,17 @@ export async function removeReport({id, postId: targetId}) {
     reports,
   });
   return reports;
+}
+
+export async function blockUser({id, userId: targetId}) {
+  const doc = await usersCollection.doc(id).get();
+  const user = doc.data();
+  const blocks = user.blocks
+    ? blocks.filter(postId => postId !== targetId)
+    : [];
+
+  await usersCollection.doc(id).update({
+    blocks,
+  });
+  return blocks;
 }
