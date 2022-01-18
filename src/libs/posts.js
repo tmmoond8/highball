@@ -134,7 +134,7 @@ export function usePosts(userId) {
     onRefresh: handleRefresh,
     onRemovePost: handleRemove,
     onUpdatePost: handleUpdate,
-    enabled: !userId || userId === user.id,
+    enabled: !userId || userId === user?.id,
   });
 
   return {

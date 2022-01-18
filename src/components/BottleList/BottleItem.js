@@ -2,13 +2,15 @@ import React from 'react';
 import {Pressable, Text, Image, StyleSheet, View} from 'react-native';
 
 const BottleItem = ({bottle, onPress}) => {
-  const {model, submodel, age, price, volume, date, where, etc} = bottle;
+  const {model, submodel, age, price, volume, photoURL} = bottle;
   return (
     <Pressable style={styles.block} onPress={onPress}>
       <Image
         style={styles.image}
         source={{
-          uri: 'https://noticon-static.tammolo.com/dgggcrkxq/image/upload/v1566912978/noticon/yuiz3tk8jejrbxz5ewp7.png',
+          uri:
+            photoURL ||
+            'https://noticon-static.tammolo.com/dgggcrkxq/image/upload/v1566912978/noticon/yuiz3tk8jejrbxz5ewp7.png',
         }}
       />
       <View style={styles.content}>

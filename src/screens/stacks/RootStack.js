@@ -37,7 +37,8 @@ export default function RootStack() {
         name="Detail"
         component={Screens.Detail}
         options={{
-          headerShown: false,
+          title: '',
+          headerBackTitle: '뒤로가기',
         }}
       />
       <Stack.Screen
