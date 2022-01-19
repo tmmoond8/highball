@@ -1,5 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import SplashScreen from 'react-native-splash-screen';
 import MainTabStack from './MainTabStack';
 import * as Screens from '..';
 import {useUserContext} from '../../contexts/userContext';
@@ -14,6 +15,7 @@ export default function RootStack() {
     // 컴포넌트 첫 로딩 시 로그인 상태를 확인하고 UserContext에 적용
     const unsubscribe = subscribeAuth(async currentUser => {
       unsubscribe();
+      SplashScreen.hide();
       if (!currentUser) {
         return;
       }
